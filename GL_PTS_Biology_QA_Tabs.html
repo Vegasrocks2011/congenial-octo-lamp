@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GL PTS Biology — Questions & Marking</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal:        #0D7A5F;
+  --teal-dark:   #085041;
+  --teal-light:  #E0F4EE;
+  --teal-mid:    #1D9E75;
+  --ink:         #1A1A2E;
+  --ink-mid:     #4A4A6A;
+  --ink-light:   #9090AA;
+  --surface:     #F7F7F5;
+  --card:        #FFFFFF;
+  --border:      #E4E4EE;
+  --green:       #16A34A;
+  --green-bg:    #F0FDF4;
+  --green-bdr:   #86EFAC;
+  --red:         #DC2626;
+  --red-bg:      #FEF2F2;
+  --red-bdr:     #FECACA;
+  --amber:       #D97706;
+  --amber-bg:    #FFFBEB;
+  --blue-bg:     #EFF6FF;
+  --blue:        #1E40AF;
+  --found-bg:    #FFFBEB;
+  --found-col:   #92400E;
+  --std-bg:      #EFF6FF;
+  --std-col:     #1E40AF;
+  --str-bg:      #F0FDF4;
+  --str-col:     #166534;
+  --radius:      12px;
+  --radius-sm:   8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--ink); min-height: 100vh; }
+
+/* ── Header ── */
+.header {
+  background: var(--teal-dark);
+  padding: 18px 28px 0;
+  color: #fff;
+}
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.header-title { font-size: 18px; font-weight: 600; }
+.header-sub   { font-size: 12px; opacity: .65; margin-top: 3px; }
+.header-badge {
+  font-size: 11px; font-family: 'DM Mono', monospace;
+  background: rgba(255,255,255,.12);
+  padding: 5px 12px; border-radius: 20px; opacity: .85;
+}
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 4px; }
+.tab {
+  padding: 10px 24px;
+  font-size: 13px; font-weight: 600;
+  border: none; cursor: pointer;
+  border-radius: 10px 10px 0 0;
+  background: rgba(255,255,255,.1);
+  color: rgba(255,255,255,.6);
+  font-family: 'DM Sans', sans-serif;
+  transition: all .15s;
+  display: flex; align-items: center; gap: 7px;
+}
+.tab:hover { background: rgba(255,255,255,.18); color: rgba(255,255,255,.9); }
+.tab.active { background: var(--surface); color: var(--teal-dark); }
+.tab-badge {
+  background: var(--teal-mid);
+  color: #fff;
+  font-size: 10px; font-weight: 700;
+  padding: 1px 7px; border-radius: 10px;
+  font-family: 'DM Mono', monospace;
+}
+.tab.active .tab-badge { background: var(--teal-dark); }
+
+/* ── Filter bar ── */
+.filter-bar {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+.filter-label { font-size: 11px; font-weight: 600; color: var(--ink-light); text-transform: uppercase; letter-spacing: .05em; flex-shrink: 0; }
+.pill {
+  padding: 5px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px; font-weight: 500;
+  cursor: pointer; background: var(--card);
+  color: var(--ink-mid);
+  transition: all .13s;
+  font-family: 'DM Sans', sans-serif;
+}
+.pill:hover { border-color: var(--teal); color: var(--teal); }
+.pill.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+.progress-info { margin-left: auto; font-size: 12px; color: var(--ink-light); font-family: 'DM Mono', monospace; white-space: nowrap; }
+
+/* ── Shell ── */
+.shell { max-width: 820px; margin: 0 auto; padding: 24px 16px 60px; }
+
+/* ── Pane ── */
+.pane { display: none; }
+.pane.active { display: block; }
+
+/* ── Topic group ── */
+.topic-group { margin-bottom: 32px; }
+.topic-hdr {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 2px solid var(--teal-light);
+}
+.topic-icon {
+  width: 34px; height: 34px;
+  background: var(--teal);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+}
+.topic-name  { font-size: 16px; font-weight: 600; color: var(--teal-dark); }
+.topic-count { font-size: 11px; color: var(--ink-light); margin-top: 2px; }
+
+/* ── Question card ── */
+.q-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 10px;
+  transition: box-shadow .15s;
+}
+.q-card:hover { box-shadow: 0 2px 14px rgba(0,0,0,.07); }
+.q-top { display: flex; align-items: flex-start; gap: 12px; }
+.q-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  color: var(--ink-light);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 7px; flex-shrink: 0; margin-top: 2px;
+}
+.q-body { flex: 1; }
+.diff-tag {
+  display: inline-block;
+  font-size: 10px; font-weight: 600;
+  padding: 2px 8px; border-radius: 20px;
+  text-transform: uppercase; letter-spacing: .05em;
+  margin-bottom: 6px;
+}
+.d-f { background: var(--found-bg); color: var(--found-col); }
+.d-s { background: var(--std-bg);   color: var(--std-col); }
+.d-x { background: var(--str-bg);   color: var(--str-col); }
+.q-text { font-size: 14px; color: var(--ink); line-height: 1.65; margin-bottom: 12px; }
+
+/* ── Options (Tab 1 — selectable) ── */
+.opts { display: flex; flex-direction: column; gap: 7px; }
+.opt-btn {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 13px;
+  color: var(--ink-mid); background: var(--surface);
+  text-align: left; width: 100%; line-height: 1.5;
+  font-family: 'DM Sans', sans-serif;
+  transition: all .13s;
+}
+.opt-btn:hover { border-color: var(--teal-mid); background: var(--teal-light); color: var(--ink); }
+.opt-btn.selected { border-color: var(--teal); background: var(--teal-light); color: var(--teal-dark); }
+.opt-btn.selected .ol { background: var(--teal); color: #fff; }
+.ol {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  min-width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--border); color: var(--ink-mid);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px; transition: all .13s;
+}
+
+/* ── Options (Tab 2 — marked) ── */
+.opts-marked { display: flex; flex-direction: column; gap: 7px; }
+.opt-marked {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px; color: var(--ink-mid);
+  background: var(--surface); line-height: 1.5;
+}
+.opt-marked.is-correct {
+  border-color: var(--green-bdr);
+  background: var(--green-bg);
+  color: #166534;
+}
+.opt-marked.is-correct .ol { background: var(--green); color: #fff; }
+.opt-marked.was-chosen-wrong {
+  border-color: var(--red-bdr);
+  background: var(--red-bg);
+  color: #991B1B;
+}
+.opt-marked.was-chosen-wrong .ol { background: var(--red); color: #fff; }
+.opt-suffix {
+  margin-left: auto; font-size: 11px; font-weight: 600;
+  padding: 2px 7px; border-radius: 10px; flex-shrink: 0; align-self: center;
+}
+.suf-correct { background: var(--green); color: #fff; }
+.suf-wrong   { background: var(--red);   color: #fff; }
+
+/* ── Explanation box ── */
+.exp-box {
+  margin-top: 10px; padding: 10px 14px;
+  background: var(--green-bg);
+  border-left: 3px solid var(--green);
+  border-radius: 0 8px 8px 0;
+  font-size: 13px; color: #166534; line-height: 1.6;
+}
+.exp-box .el { font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; opacity: .75; margin-bottom: 3px; }
+.rev-box {
+  margin-top: 6px; padding: 8px 12px;
+  background: var(--blue-bg);
+  border-left: 3px solid #3B82F6;
+  border-radius: 0 8px 8px 0;
+  font-size: 12px; color: var(--blue); line-height: 1.5;
+}
+.unanswered-box {
+  margin-top: 10px; padding: 9px 13px;
+  background: var(--amber-bg);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 8px 8px 0;
+  font-size: 13px; color: #92400E;
+}
+
+/* ── Mark indicator on card ── */
+.q-card.marked-correct { border-left: 4px solid var(--green); }
+.q-card.marked-wrong   { border-left: 4px solid var(--red); }
+.q-card.marked-skip    { border-left: 4px solid var(--amber); }
+
+/* ── Summary panel ── */
+.summary-panel {
+  background: var(--teal-dark);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin-bottom: 28px;
+}
+.sum-title { font-size: 16px; font-weight: 600; margin-bottom: 18px; }
+.sum-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 20px; }
+.sum-stat { text-align: center; }
+.sum-val { font-size: 30px; font-weight: 600; font-family: 'DM Mono', monospace; }
+.sum-lbl { font-size: 11px; opacity: .6; text-transform: uppercase; letter-spacing: .04em; margin-top: 3px; }
+.sum-bar-wrap { margin-bottom: 20px; }
+.sum-bar-label { font-size: 12px; opacity: .7; margin-bottom: 6px; display: flex; justify-content: space-between; }
+.sum-bar-track { height: 8px; background: rgba(255,255,255,.15); border-radius: 4px; overflow: hidden; }
+.sum-bar-fill  { height: 100%; border-radius: 4px; transition: width .6s cubic-bezier(.4,0,.2,1); }
+.sum-message { font-size: 13px; opacity: .8; line-height: 1.6; padding: 12px 16px; background: rgba(255,255,255,.08); border-radius: 8px; }
+
+/* ── Topic breakdown ── */
+.breakdown-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.breakdown-title { font-size: 14px; font-weight: 600; margin-bottom: 14px; color: var(--ink); }
+.rag-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid var(--border);
+}
+.rag-row:last-child { border-bottom: none; }
+.rag-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.dot-g { background: var(--green); }
+.dot-a { background: var(--amber); }
+.dot-r { background: var(--red); }
+.rag-topic { font-size: 13px; flex: 1; }
+.rag-score { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--ink-light); }
+.rag-bar { width: 80px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.rag-bar-fill { height: 100%; border-radius: 3px; }
+
+/* ── Revise list ── */
+.revise-panel {
+  background: var(--red-bg);
+  border: 1px solid var(--red-bdr);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+.revise-title { font-size: 14px; font-weight: 600; color: var(--red); margin-bottom: 10px; }
+.revise-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 13px; color: #991B1B;
+  padding: 5px 0; border-bottom: 1px solid var(--red-bdr); line-height: 1.5;
+}
+.revise-item:last-child { border-bottom: none; }
+.revise-bullet { color: var(--red); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 10px 22px;
+  border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: all .15s;
+}
+.btn-primary { background: var(--teal); color: #fff; }
+.btn-primary:hover { background: var(--teal-dark); }
+.btn-ghost { background: var(--card); color: var(--ink-mid); border: 1.5px solid var(--border); }
+.btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+
+@media (max-width:560px) {
+  .sum-stats { grid-template-columns: repeat(2,1fr); }
+  .filter-bar { padding: 10px 12px; }
+  .shell { padding: 16px 10px 50px; }
+  .header { padding: 14px 16px 0; }
+}
+@media print {
+  .filter-bar, .tabs, .header-top { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-title">🔬 GL PTS Biology — Year 7</div>
+      <div class="header-sub">Al Yasmina Academy · KS3 Science · 41 questions · 9 topics</div>
+    </div>
+    <div class="header-badge" id="progress-badge">0 / 41 answered</div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('questions',this)">
+      <span>📝</span> Questions
+      <span class="tab-badge" id="q-badge">41</span>
+    </button>
+    <button class="tab" onclick="switchTab('marking',this)">
+      <span>✅</span> Mark &amp; Summary
+      <span class="tab-badge" id="m-badge">0</span>
+    </button>
+  </div>
+</div>
+
+<!-- Filter bar (questions tab only) -->
+<div class="filter-bar" id="filter-bar">
+  <span class="filter-label">Topic:</span>
+  <button class="pill active" onclick="filterTopic('all',this)">All</button>
+  <button class="pill" onclick="filterTopic('cells',this)">Cells</button>
+  <button class="pill" onclick="filterTopic('skeleton',this)">Skeleton</button>
+  <button class="pill" onclick="filterTopic('nutrition',this)">Nutrition</button>
+  <button class="pill" onclick="filterTopic('gas',this)">Gas exchange</button>
+  <button class="pill" onclick="filterTopic('repro',this)">Reproduction</button>
+  <button class="pill" onclick="filterTopic('photo',this)">Photosynthesis</button>
+  <button class="pill" onclick="filterTopic('resp',this)">Respiration</button>
+  <button class="pill" onclick="filterTopic('eco',this)">Ecosystems</button>
+  <button class="pill" onclick="filterTopic('gen',this)">Genetics</button>
+  <span class="progress-info" id="filter-progress">0 / 41</span>
+</div>
+
+<div class="shell">
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- TAB 1 — QUESTIONS                                        -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div class="pane active" id="pane-questions"></div>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- TAB 2 — MARKING & SUMMARY                               -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div class="pane" id="pane-marking">
+    <div id="marking-content"></div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════════════
+const TOPICS = [
+  { id:'cells',    label:'Cells & organisation',   icon:'🔬', code:'BIO-Y7-CELLS' },
+  { id:'skeleton', label:'Skeleton & muscles',      icon:'🦴', code:'BIO-Y7-SKEL'  },
+  { id:'nutrition',label:'Nutrition & digestion',   icon:'🍎', code:'BIO-Y7-NUT'   },
+  { id:'gas',      label:'Gas exchange',            icon:'💨', code:'BIO-Y7-GAS'   },
+  { id:'repro',    label:'Reproduction',            icon:'🌸', code:'BIO-Y7-REPRO' },
+  { id:'photo',    label:'Photosynthesis',          icon:'☀️', code:'BIO-Y7-PHOTO' },
+  { id:'resp',     label:'Cellular respiration',    icon:'⚡', code:'BIO-Y7-RESP'  },
+  { id:'eco',      label:'Ecosystems',              icon:'🌿', code:'BIO-Y7-ECO'   },
+  { id:'gen',      label:'Genetics & evolution',    icon:'🧬', code:'BIO-Y7-GEN'   },
+];
+
+const QS = [
+  // CELLS
+  {id:'BIO-001',topic:'cells',diff:'Standard', q:'Which structure controls what enters and leaves the cell?',
+   opts:['Cell wall','Cell membrane','Nucleus','Vacuole'], ans:1,
+   exp:'The cell membrane is selectively permeable — it controls which substances move in and out of the cell.',
+   rev:'Revise: cell structure and the function of each organelle'},
+  {id:'BIO-002',topic:'cells',diff:'Foundation', q:'Which of the following is found in plant cells but NOT in animal cells?',
+   opts:['Nucleus','Cell membrane','Chloroplast','Mitochondria'], ans:2,
+   exp:'Chloroplasts are only found in plant cells. They contain chlorophyll and are the site of photosynthesis.',
+   rev:'Revise: differences between plant and animal cells'},
+  {id:'BIO-003',topic:'cells',diff:'Foundation', q:'A student views cells with a cell wall, large vacuole and chloroplasts. What type of cell is this?',
+   opts:['Animal cell','Bacterial cell','Plant cell','Fungal cell'], ans:2,
+   exp:'Plant cells have all three: cellulose cell walls, a large central vacuole, and chloroplasts.',
+   rev:'Revise: identifying cell types from their features'},
+  {id:'BIO-004',topic:'cells',diff:'Foundation', q:'What is the correct order of organisation from smallest to largest?',
+   opts:['Organ → cell → tissue → organism','Cell → tissue → organ → organism','Tissue → cell → organ → organism','Cell → organ → tissue → organism'], ans:1,
+   exp:'The hierarchy is: cell → tissue → organ → organ system → organism.',
+   rev:'Revise: levels of organisation in multicellular organisms'},
+  {id:'BIO-005',topic:'cells',diff:'Standard', q:'Diffusion is best described as:',
+   opts:['Active movement against a concentration gradient','Movement of particles from low to high concentration','Movement of particles from high to low concentration','Movement that requires energy from the cell'], ans:2,
+   exp:'Diffusion is passive — no energy required. Particles move down their concentration gradient from high to low.',
+   rev:'Revise: diffusion and concentration gradients'},
+  {id:'BIO-006',topic:'cells',diff:'Stretch', q:"Which organelle is responsible for producing most of a cell's energy?",
+   opts:['Nucleus','Vacuole','Ribosome','Mitochondria'], ans:3,
+   exp:'Mitochondria are the site of aerobic respiration where glucose is broken down to release ATP (energy).',
+   rev:'Revise: mitochondria and aerobic respiration'},
+  // SKELETON
+  {id:'BIO-007',topic:'skeleton',diff:'Foundation', q:'Which of the following is NOT a function of the human skeleton?',
+   opts:['Support','Protection','Gas exchange','Movement'], ans:2,
+   exp:'Gas exchange is the function of the lungs, not the skeleton. The skeleton provides support, protection, movement, and blood cell production.',
+   rev:'Revise: the four functions of the skeleton'},
+  {id:'BIO-008',topic:'skeleton',diff:'Standard', q:'When the bicep contracts to bend the arm, what does the tricep do?',
+   opts:['Contracts','Relaxes','Stays the same','Shortens'], ans:1,
+   exp:'Antagonistic muscles work in opposition. When the bicep contracts the tricep relaxes, and vice versa.',
+   rev:'Revise: antagonistic muscle pairs — bicep and tricep'},
+  {id:'BIO-009',topic:'skeleton',diff:'Standard', q:'Which type of tissue connects muscle to bone?',
+   opts:['Ligament','Cartilage','Tendon','Bone marrow'], ans:2,
+   exp:'Tendons connect muscle to bone. Ligaments connect bone to bone.',
+   rev:'Revise: tendons vs ligaments — know the difference'},
+  {id:'BIO-010',topic:'skeleton',diff:'Stretch', q:'Red blood cells are produced in the:',
+   opts:['Liver','Bone marrow','Spleen','Heart'], ans:1,
+   exp:'Red blood cells are produced in the red bone marrow found in bones such as the pelvis and ribs.',
+   rev:'Revise: blood cell production as a function of the skeleton'},
+  // NUTRITION
+  {id:'BIO-011',topic:'nutrition',diff:'Foundation', q:"Which nutrient group provides the body's main source of energy?",
+   opts:['Proteins','Vitamins','Carbohydrates','Lipids'], ans:2,
+   exp:"Carbohydrates are the body's primary energy source, broken down into glucose which is used in respiration.",
+   rev:'Revise: the seven food groups and their functions'},
+  {id:'BIO-012',topic:'nutrition',diff:'Standard', q:'Enzymes in digestion act as:',
+   opts:['Products','Biological catalysts','Structural proteins','Energy stores'], ans:1,
+   exp:'Enzymes are biological catalysts — they speed up chemical reactions without being used up themselves.',
+   rev:'Revise: enzymes as biological catalysts in digestion'},
+  {id:'BIO-013',topic:'nutrition',diff:'Standard', q:'Which part of the digestive system absorbs most nutrients into the blood?',
+   opts:['Stomach','Large intestine','Small intestine','Oesophagus'], ans:2,
+   exp:'The small intestine is lined with villi which greatly increase the surface area for absorption of nutrients.',
+   rev:'Revise: structure and function of the small intestine and villi'},
+  {id:'BIO-014',topic:'nutrition',diff:'Standard', q:'A diet lacking in vitamin C leads to which deficiency disease?',
+   opts:['Rickets','Scurvy','Anaemia','Kwashiorkor'], ans:1,
+   exp:'Scurvy is caused by vitamin C deficiency. Rickets results from vitamin D deficiency.',
+   rev:'Revise: vitamin deficiency diseases and their causes'},
+  {id:'BIO-015',topic:'nutrition',diff:'Stretch', q:'Where does the chemical digestion of starch begin?',
+   opts:['Stomach','Small intestine','Large intestine','Mouth'], ans:3,
+   exp:'Salivary amylase in the mouth begins breaking starch down into maltose.',
+   rev:'Revise: salivary amylase and the start of starch digestion'},
+  // GAS EXCHANGE
+  {id:'BIO-016',topic:'gas',diff:'Foundation', q:'What happens to the diaphragm when we breathe in?',
+   opts:['It relaxes and moves up','It contracts and moves down','It stays in the same position','It moves sideways'], ans:1,
+   exp:'When we inhale the diaphragm contracts and flattens (moves down), increasing chest volume and drawing air in.',
+   rev:'Revise: the mechanism of breathing — diaphragm and intercostal muscles'},
+  {id:'BIO-017',topic:'gas',diff:'Standard', q:'Which gas moves from the blood into the alveoli to be breathed out?',
+   opts:['Oxygen','Nitrogen','Carbon dioxide','Water vapour'], ans:2,
+   exp:'CO2 is a waste product of respiration. It diffuses from the blood (high concentration) into the alveoli (low concentration).',
+   rev:'Revise: gas exchange at the alveoli — what moves in and out'},
+  {id:'BIO-018',topic:'gas',diff:'Standard', q:'Which feature of alveoli makes them well adapted for gas exchange?',
+   opts:['Thick walls','Large volume','Large surface area and moist lining','Surrounded by cartilage'], ans:2,
+   exp:'Alveoli have a very large total surface area, thin walls (one cell thick), a moist lining, and a rich blood supply.',
+   rev:'Revise: adaptations of alveoli for efficient gas exchange'},
+  {id:'BIO-019',topic:'gas',diff:'Standard', q:'In plants, which structures allow gas exchange through the leaf?',
+   opts:['Chloroplasts','Stomata','Xylem','Root hairs'], ans:1,
+   exp:'Stomata are tiny pores mainly on the underside of leaves. They open and close to allow CO2 in and O2 out.',
+   rev:'Revise: stomata and gas exchange in plants'},
+  // REPRODUCTION
+  {id:'BIO-020',topic:'repro',diff:'Foundation', q:'What is fertilisation?',
+   opts:['The release of an egg from the ovary','The fusion of a sperm and egg cell','The development of an embryo','The process of giving birth'], ans:1,
+   exp:'Fertilisation is when a sperm fuses with an egg to form a zygote with genetic material from both parents.',
+   rev:'Revise: fertilisation and early stages of human reproduction'},
+  {id:'BIO-021',topic:'repro',diff:'Standard', q:'What is the function of the placenta?',
+   opts:['Produces eggs','Allows exchange of substances between mother and foetus','Produces amniotic fluid','Is where fertilisation occurs'], ans:1,
+   exp:"The placenta allows oxygen and nutrients to pass from the mother's blood to the foetus, and CO2 to pass back.",
+   rev:'Revise: the role of the placenta in pregnancy'},
+  {id:'BIO-022',topic:'repro',diff:'Standard', q:'In a flower, which structure produces pollen?',
+   opts:['Stigma','Ovary','Anther','Petal'], ans:2,
+   exp:'The anther is the male part of the flower that produces pollen. The stigma is where pollen lands.',
+   rev:'Revise: flower structure — anther, stigma, ovary, petal'},
+  {id:'BIO-023',topic:'repro',diff:'Standard', q:'Which type of pollination relies on insects to transfer pollen?',
+   opts:['Wind pollination','Insect pollination','Self-pollination','Water pollination'], ans:1,
+   exp:'Insect-pollinated flowers have colourful petals, scent and nectar to attract insects which carry pollen.',
+   rev:'Revise: insect vs wind pollination and their adaptations'},
+  // PHOTOSYNTHESIS
+  {id:'BIO-024',topic:'photo',diff:'Foundation', q:'What is the word equation for photosynthesis?',
+   opts:['Glucose + oxygen → carbon dioxide + water','Carbon dioxide + water → glucose + oxygen','Oxygen + water → glucose + carbon dioxide','Glucose + carbon dioxide → water + oxygen'], ans:1,
+   exp:'Photosynthesis: carbon dioxide + water → glucose + oxygen. Light energy drives this inside chloroplasts.',
+   rev:'Revise: the word equation for photosynthesis — reactants and products'},
+  {id:'BIO-025',topic:'photo',diff:'Foundation', q:'Where in the plant cell does photosynthesis take place?',
+   opts:['Mitochondria','Nucleus','Vacuole','Chloroplast'], ans:3,
+   exp:'Chloroplasts contain chlorophyll which absorbs light energy used to drive photosynthesis.',
+   rev:'Revise: chloroplasts and their role in photosynthesis'},
+  {id:'BIO-026',topic:'photo',diff:'Standard', q:'A plant kept in a dark cupboard for several days would most likely:',
+   opts:['Grow faster','Produce more oxygen','Lose its green colour and weaken','Increase in glucose levels'], ans:2,
+   exp:'Without light the plant cannot photosynthesise. Chlorophyll breaks down, leaves yellow, and the plant weakens.',
+   rev:'Revise: light as a requirement for photosynthesis'},
+  {id:'BIO-027',topic:'photo',diff:'Standard', q:'Which of the following is a raw material (reactant) for photosynthesis?',
+   opts:['Glucose','Oxygen','Carbon dioxide','Starch'], ans:2,
+   exp:'The raw materials for photosynthesis are carbon dioxide and water. Glucose and oxygen are the products.',
+   rev:'Revise: distinguishing reactants from products in photosynthesis'},
+  // RESPIRATION
+  {id:'BIO-028',topic:'resp',diff:'Foundation', q:'What is the word equation for aerobic respiration?',
+   opts:['Glucose + carbon dioxide → oxygen + water','Glucose + oxygen → carbon dioxide + water + energy','Glucose → lactic acid + energy','Carbon dioxide + water → glucose + oxygen'], ans:1,
+   exp:'Aerobic respiration: glucose + oxygen → carbon dioxide + water + energy.',
+   rev:'Revise: the word equation for aerobic respiration'},
+  {id:'BIO-029',topic:'resp',diff:'Standard', q:'Anaerobic respiration in human muscle cells produces:',
+   opts:['Carbon dioxide and water','Ethanol and carbon dioxide','Lactic acid','Glucose and oxygen'], ans:2,
+   exp:'During vigorous exercise when oxygen is limited, muscles respire anaerobically producing lactic acid.',
+   rev:'Revise: anaerobic respiration in muscles and the role of lactic acid'},
+  {id:'BIO-030',topic:'resp',diff:'Standard', q:'Where does aerobic respiration take place in the cell?',
+   opts:['Nucleus','Chloroplast','Ribosome','Mitochondria'], ans:3,
+   exp:'Aerobic respiration occurs in the mitochondria. Active cells have many mitochondria to meet energy demands.',
+   rev:'Revise: mitochondria as the site of aerobic respiration'},
+  {id:'BIO-031',topic:'resp',diff:'Stretch', q:'How does anaerobic respiration in yeast differ from that in humans?',
+   opts:['Yeast produces lactic acid; humans produce ethanol','Yeast produces ethanol and CO2; humans produce lactic acid','Both produce ethanol','Both produce lactic acid'], ans:1,
+   exp:'Yeast ferments to produce ethanol and CO2 (used in baking and brewing). Humans produce lactic acid.',
+   rev:'Revise: fermentation in yeast vs anaerobic respiration in humans'},
+  // ECOSYSTEMS
+  {id:'BIO-032',topic:'eco',diff:'Foundation', q:'In a food web, what does an arrow represent?',
+   opts:['Where the organism lives','The flow of energy from prey to predator','Competition between species','The size of the population'], ans:1,
+   exp:'Arrows show the flow of energy — from the organism being eaten to the organism eating it.',
+   rev:'Revise: reading and interpreting food webs — what arrows mean'},
+  {id:'BIO-033',topic:'eco',diff:'Standard', q:'If the rabbit population suddenly decreased, what would most likely happen to the fox population?',
+   opts:['Increase','Stay the same','Decrease','Not be affected'], ans:2,
+   exp:'Foxes depend on rabbits as food. If rabbits decline, foxes have less food and their numbers fall too.',
+   rev:'Revise: predator-prey relationships and interdependence in ecosystems'},
+  {id:'BIO-034',topic:'eco',diff:'Standard', q:'Which term describes all populations of different species living in the same area?',
+   opts:['Habitat','Ecosystem','Community','Population'], ans:2,
+   exp:'A community is all populations of different species in the same area. An ecosystem includes the abiotic environment too.',
+   rev:'Revise: key ecology terms — population, community, ecosystem, habitat'},
+  {id:'BIO-035',topic:'eco',diff:'Standard', q:'Why is biodiversity important?',
+   opts:['It makes ecosystems look attractive','It ensures ecosystems are more stable and resilient to change','It increases the number of predators only','It reduces competition between species'], ans:1,
+   exp:'High biodiversity makes ecosystems more stable. If one species is lost, others can fill its role.',
+   rev:'Revise: the importance of biodiversity and ecosystem stability'},
+  {id:'BIO-036',topic:'eco',diff:'Foundation', q:'Which of the following is an example of a producer in an ecosystem?',
+   opts:['Fox','Rabbit','Grass','Hawk'], ans:2,
+   exp:'Producers make their own food via photosynthesis. Grass is a producer; the others are all consumers.',
+   rev:'Revise: producers and consumers in food chains'},
+  // GENETICS
+  {id:'BIO-037',topic:'gen',diff:'Foundation', q:'What is DNA?',
+   opts:['A type of protein','The molecule that carries genetic information','A form of carbohydrate','An enzyme in the nucleus'], ans:1,
+   exp:'DNA (deoxyribonucleic acid) carries genetic information and is found in the nucleus coiled into chromosomes.',
+   rev:'Revise: the structure and function of DNA'},
+  {id:'BIO-038',topic:'gen',diff:'Standard', q:'What is a gene?',
+   opts:['A section of DNA that codes for a specific protein or characteristic','The entire chromosome','A type of cell','The process of copying DNA'], ans:0,
+   exp:'A gene is a section of DNA that codes for a specific protein which determines a characteristic.',
+   rev:'Revise: genes, chromosomes and DNA — the relationship between them'},
+  {id:'BIO-039',topic:'gen',diff:'Standard', q:'Which of the following is an example of continuous variation?',
+   opts:['Blood group (A, B, AB, O)','Ability to roll your tongue','Height','Whether you have attached or free earlobes'], ans:2,
+   exp:'Continuous variation shows a range of values with no distinct categories — height can be any value across a spectrum.',
+   rev:'Revise: continuous vs discontinuous variation with examples'},
+  {id:'BIO-040',topic:'gen',diff:'Standard', q:'Natural selection occurs because:',
+   opts:['All individuals in a species are identical','Some individuals have variations that make them better adapted to survive and reproduce','The environment never changes','Organisms choose to evolve'], ans:1,
+   exp:'Individuals with advantageous variations survive, reproduce, and pass on those traits — leading to evolution.',
+   rev:'Revise: the mechanism of natural selection — variation, selection, inheritance'},
+  {id:'BIO-041',topic:'gen',diff:'Stretch', q:"What could cause a species to become extinct?",
+   opts:['Too much food availability',"Environmental change that reduces the species' ability to compete and reproduce",'Increase in biodiversity','Stable environment'], ans:1,
+   exp:'Extinction occurs when environmental change means individuals can no longer compete and reproduce.',
+   rev:'Revise: extinction, adaptation failure and the role of environmental change'},
+];
+
+// ═══════════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════════
+const answers = {}; // qid → chosen index
+let currentFilter = 'all';
+let currentTab = 'questions';
+
+// ═══════════════════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════════════════════════════════
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('pane-' + tab).classList.add('active');
+  document.getElementById('filter-bar').style.display = tab === 'questions' ? 'flex' : 'none';
+  if (tab === 'marking') renderMarking();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// TOPIC FILTER
+// ═══════════════════════════════════════════════════════════════════════
+function filterTopic(topic, btn) {
+  currentFilter = topic;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.topic-group').forEach(g => {
+    g.style.display = (topic === 'all' || g.dataset.topic === topic) ? 'block' : 'none';
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ANSWER SELECTION
+// ═══════════════════════════════════════════════════════════════════════
+function selectAnswer(qid, chosen) {
+  answers[qid] = chosen;
+  // Update button states in this card
+  const card = document.getElementById('card-' + qid);
+  card.querySelectorAll('.opt-btn').forEach((b, i) => {
+    b.classList.toggle('selected', i === chosen);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = QS.length;
+  const done = Object.keys(answers).length;
+  document.getElementById('progress-badge').textContent = `${done} / ${total} answered`;
+  document.getElementById('filter-progress').textContent = `${done} / ${total}`;
+  document.getElementById('m-badge').textContent = done;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// RENDER QUESTIONS TAB
+// ═══════════════════════════════════════════════════════════════════════
+function renderQuestions() {
+  const container = document.getElementById('pane-questions');
+  let html = '';
+  TOPICS.forEach(t => {
+    const topicQs = QS.filter(q => q.topic === t.id);
+    html += `<div class="topic-group" data-topic="${t.id}">
+      <div class="topic-hdr">
+        <div class="topic-icon">${t.icon}</div>
+        <div>
+          <div class="topic-name">${t.label}</div>
+          <div class="topic-count">${topicQs.length} questions · ${t.code}</div>
+        </div>
+      </div>`;
+    topicQs.forEach((q, qi) => {
+      const diffClass = q.diff === 'Foundation' ? 'd-f' : q.diff === 'Stretch' ? 'd-x' : 'd-s';
+      html += `<div class="q-card" id="card-${q.id}">
+        <div class="q-top">
+          <div class="q-num">${q.id}</div>
+          <div class="q-body">
+            <span class="diff-tag ${diffClass}">${q.diff}</span>
+            <div class="q-text">${q.q}</div>
+            <div class="opts">`;
+      q.opts.forEach((o, oi) => {
+        const sel = answers[q.id] === oi ? ' selected' : '';
+        html += `<button class="opt-btn${sel}" onclick="selectAnswer('${q.id}',${oi})">
+          <span class="ol">${'ABCD'[oi]}</span>${o}</button>`;
+      });
+      html += `</div></div></div></div>`;
+    });
+    html += `</div>`;
+  });
+  container.innerHTML = html;
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// RENDER MARKING TAB
+// ═══════════════════════════════════════════════════════════════════════
+function renderMarking() {
+  const total = QS.length;
+  const answered = Object.keys(answers).length;
+  const correct = QS.filter(q => answers[q.id] === q.ans).length;
+  const wrong = QS.filter(q => answers[q.id] !== undefined && answers[q.id] !== q.ans).length;
+  const skipped = total - answered;
+  const pct = answered > 0 ? Math.round(correct / total * 100) : 0;
+  const barColor = pct >= 75 ? '#16A34A' : pct >= 50 ? '#D97706' : '#DC2626';
+  const message = pct >= 80
+    ? 'Excellent work — you have a strong grasp of the Biology content. Keep practising stretch questions.'
+    : pct >= 65
+    ? 'Good effort — you are secure on most topics. Focus revision on any red topics in the breakdown below.'
+    : pct >= 50
+    ? 'Getting there — several topics need more attention. Work through the revision notes on incorrect answers.'
+    : 'This content needs significant revision. Start with the red topics below and re-read your class notes.';
+
+  // Per-topic breakdown
+  const topicStats = {};
+  TOPICS.forEach(t => { topicStats[t.id] = { label: t.label, total: 0, correct: 0, revNotes: [] }; });
+  QS.forEach(q => {
+    topicStats[q.topic].total++;
+    if (answers[q.id] === q.ans) {
+      topicStats[q.topic].correct++;
+    } else if (answers[q.id] !== undefined) {
+      topicStats[q.topic].revNotes.push(q.rev);
+    }
+  });
+
+  // Revision list — all wrong answers
+  const wrongQs = QS.filter(q => answers[q.id] !== undefined && answers[q.id] !== q.ans);
+
+  let html = `
+    <div class="summary-panel">
+      <div class="sum-title">📊 Your results summary</div>
+      <div class="sum-stats">
+        <div class="sum-stat"><div class="sum-val">${correct}</div><div class="sum-lbl">Correct</div></div>
+        <div class="sum-stat"><div class="sum-val">${wrong}</div><div class="sum-lbl">Incorrect</div></div>
+        <div class="sum-stat"><div class="sum-val">${skipped}</div><div class="sum-lbl">Not answered</div></div>
+        <div class="sum-stat"><div class="sum-val">${pct}%</div><div class="sum-lbl">Score</div></div>
+      </div>
+      <div class="sum-bar-wrap">
+        <div class="sum-bar-label"><span>Overall score</span><span>${correct} / ${total}</span></div>
+        <div class="sum-bar-track"><div class="sum-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+      </div>
+      <div class="sum-message">${message}</div>
+    </div>`;
+
+  // Topic breakdown
+  html += `<div class="breakdown-panel"><div class="breakdown-title">Topic breakdown</div>`;
+  TOPICS.forEach(t => {
+    const s = topicStats[t.id];
+    if (s.total === 0) return;
+    const p = Math.round(s.correct / s.total * 100);
+    const dot = p >= 75 ? 'dot-g' : p >= 50 ? 'dot-a' : 'dot-r';
+    const barCol = p >= 75 ? '#16A34A' : p >= 50 ? '#D97706' : '#DC2626';
+    const tIcon = TOPICS.find(x => x.id === t.id).icon;
+    html += `<div class="rag-row">
+      <div class="rag-dot ${dot}"></div>
+      <span class="rag-topic">${tIcon} ${s.label}</span>
+      <div class="rag-bar"><div class="rag-bar-fill" style="width:${p}%;background:${barCol}"></div></div>
+      <span class="rag-score">${s.correct}/${s.total} · ${p}%</span>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Revision priority list
+  if (wrongQs.length > 0) {
+    html += `<div class="revise-panel">
+      <div class="revise-title">📖 What to revise — ${wrongQs.length} topic${wrongQs.length>1?'s':''} to focus on</div>`;
+    const seen = new Set();
+    wrongQs.forEach(q => {
+      if (!seen.has(q.rev)) {
+        seen.add(q.rev);
+        html += `<div class="revise-item"><span class="revise-bullet">→</span>${q.rev}</div>`;
+      }
+    });
+    html += `</div>`;
+  }
+
+  // Full question review
+  html += `<div class="breakdown-panel"><div class="breakdown-title">Full question review</div>`;
+  TOPICS.forEach(t => {
+    const topicQs = QS.filter(q => q.topic === t.id);
+    const tIcon = TOPICS.find(x => x.id === t.id).icon;
+    html += `<div style="margin-bottom:20px">
+      <div style="font-size:13px;font-weight:600;color:var(--teal-dark);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">${tIcon} ${t.label}</div>`;
+    topicQs.forEach(q => {
+      const chosen = answers[q.id];
+      const isCorrect = chosen === q.ans;
+      const isSkipped = chosen === undefined;
+      const diffClass = q.diff === 'Foundation' ? 'd-f' : q.diff === 'Stretch' ? 'd-x' : 'd-s';
+      const cardCls = isSkipped ? 'q-card marked-skip' : isCorrect ? 'q-card marked-correct' : 'q-card marked-wrong';
+      html += `<div class="${cardCls}">
+        <div class="q-top">
+          <div class="q-num">${q.id}</div>
+          <div class="q-body">
+            <span class="diff-tag ${diffClass}">${q.diff}</span>
+            <div class="q-text">${q.q}</div>
+            <div class="opts-marked">`;
+      q.opts.forEach((o, oi) => {
+        const isAns = oi === q.ans;
+        const wasChosen = oi === chosen;
+        let cls = 'opt-marked';
+        let suffix = '';
+        if (isAns) { cls += ' is-correct'; suffix = `<span class="opt-suffix suf-correct">✓ Correct</span>`; }
+        if (wasChosen && !isAns) { cls += ' was-chosen-wrong'; suffix = `<span class="opt-suffix suf-wrong">✗ Your answer</span>`; }
+        html += `<div class="${cls}"><span class="ol">${'ABCD'[oi]}</span>${o}${suffix}</div>`;
+      });
+      html += `</div>`;
+      if (isSkipped) {
+        html += `<div class="unanswered-box">⚠️ Not answered — correct answer: <strong>${q.opts[q.ans]}</strong></div>`;
+      }
+      html += `<div class="exp-box"><div class="el">Explanation</div>${q.exp}</div>`;
+      if (!isCorrect) {
+        html += `<div class="rev-box">📖 ${q.rev}</div>`;
+      }
+      html += `</div></div>`;
+    });
+    html += `</div>`;
+  });
+  html += `</div>`;
+
+  html += `<div class="btn-row">
+    <button class="btn btn-primary" onclick="switchTabByName('questions')">← Back to questions</button>
+    <button class="btn btn-ghost" onclick="resetAll()">Reset all answers</button>
+  </div>`;
+
+  document.getElementById('marking-content').innerHTML = html;
+}
+
+function switchTabByName(tab) {
+  const btn = document.querySelector(`.tab:${tab === 'questions' ? 'first-child' : 'last-child'}`);
+  switchTab(tab, btn);
+  window.scrollTo(0, 0);
+}
+
+function resetAll() {
+  if (!confirm('Reset all your answers and start again?')) return;
+  Object.keys(answers).forEach(k => delete answers[k]);
+  renderQuestions();
+  switchTabByName('questions');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════════
+renderQuestions();
+</script>
+</body>
+</html>
